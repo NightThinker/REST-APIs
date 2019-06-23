@@ -1,17 +1,24 @@
 import React from 'react';
-import './App.css';
+import axios from 'axios';
 
 function App() {
+  async function getPosts(event) {
+    console.log('getPosts');
+    // async function getUser() {
+    try {
+      const response = await axios.get('http://localhost:8080/feed/posts');
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+    // }
+  }
+
+  function createPost(params) {}
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
+    <div>
+      <button onClick={() => getPosts()}>Get Posts</button>
+      <button onClick={() => createPost()}>Create a Post</button>
     </div>
   );
 }
