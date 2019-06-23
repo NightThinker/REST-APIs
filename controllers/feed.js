@@ -8,3 +8,13 @@ exports.getPosts = (req, res, next) => {
     ]
   });
 };
+
+exports.createPost = (req, res, next) => {
+  const title = req.body.title;
+  const content = req.body.content;
+  //Create Post in DB
+  res.status(201).json({
+    message: 'Post create successfully!',
+    post: { id: new Date().toISOString(), title: title, content: content }
+  });
+};
