@@ -3,48 +3,53 @@ const { validationResult } = require('express-validator/check');
 const Post = require('../models/post');
 
 exports.getPosts = (req, res, next) => {
-  // Post.find()
-  //   .then((posts) => {
-  //     res.status(200).json({ message: 'Fetched postes successfully.', posts: posts });
-  //   })
-  //   .catch((err) => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //     }
-  //     next(err);
-  //   });
-  res.status(200).json({
-    posts: [
-      {
-        _id: '1',
-        title: 'Fisrt name',
-        content: 'this is the first post!',
-        imageUrl: '../images/cat.jpg',
-        creator: {
-          name: 'may'
-        },
-        createdAt: new Date()
+  Post.find()
+    .then((posts) => {
+      res.status(200).json({ message: 'Fetched postes successfully.', posts: posts });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
       }
-    ]
-  });
+      next(err);
+    });
+  // res.status(200).json({
+  //   posts: [
+  //     {
+  //       _id: '1',
+  //       title: 'Fisrt name',
+  //       content: 'this is the first post!',
+  //       imageUrl: '../images/cat.jpg',
+  //       creator: {
+  //         name: 'may'
+  //       },
+  //       createdAt: new Date()
+  //     }
+  //   ]
+  // });
 };
 
 exports.createPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log('TCL: exports.createPost -> errors', errors);
-    console.log('error');
     const error = new Error('Validation fail, entered data is incorest.');
     error.statusCode = 422;
     throw error;
     // return res.status(422).json({ message: 'Validation fail, entered data is incorest.', errors: errors.array() });
   }
+
+  if (!req.file) {
+    const error = new Error('No image provided.');
+    error.statusCode = 422;
+    throw error;
+  }
+  const imageUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
   const post = new Post({
     title: title,
     content: content,
-    imageUrl: 'images/cat.jpg',
+    imageUrl: imageUrl,
     creator: {
       name: 'may'
     }
